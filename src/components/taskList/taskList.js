@@ -1,23 +1,28 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import Task from '../task';
 import './taskList.css'
 
-const TaskList = () => {
-    return (
-        <ul className="todo-list">
-          <li className="completed">
-            <Task />
-          </li>
-          <li className="editing">
-            <Task />
-            <input type="text" className="edit" value="Editing task" readOnly/>
-          </li>
-          <li>
-            <Task />
-          </li>
-        </ul>
-    );
-};
+export default class TaskList extends Component {
 
-export default TaskList;
+  render () {
+
+    const {data, onDeleted} = this.props;
+
+    this.elements = data.map((item) => {
+
+      const {...itemProps} = item;
+    
+      return (
+              <Task {...itemProps} 
+              onDeleted={() => onDeleted(item.id)}/>       
+      );
+    });
+
+    return (
+      <ul className='todo-list'>
+          {this.elements}
+      </ul>
+    );
+  }
+}
