@@ -7,15 +7,20 @@ export default class TaskList extends Component {
 
   render () {
 
-    const {data, onDeleted} = this.props;
+    const {data, onDeleted, onToggleCompleted, onToggleEdit, onItemChange} = this.props;
 
     this.elements = data.map((item) => {
 
       const {...itemProps} = item;
     
       return (
-              <Task {...itemProps} 
-              onDeleted={() => onDeleted(item.id)}/>       
+              <Task {...itemProps}
+              key={item.id}
+              onDeleted={() => onDeleted(item.id)}
+              onToggleCompleted={() => onToggleCompleted(item.id)}
+              onToggleEdit={() => onToggleEdit(item.id)}
+              onItemchange={onItemChange}
+              mykey={item.id}/>       
       );
     });
 

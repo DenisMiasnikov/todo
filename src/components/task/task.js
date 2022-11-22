@@ -8,24 +8,27 @@ export default class Task extends Component {
   constructor () {
     super();
 
-
-
     this.state = {
       completed: false,
       editing: false,
+      myChecked: false,
+      value: ''
     }
 
-    this.onItemClick = () => {
-      this.setState(({completed}) => {
-        return {
-          completed: !completed
-        }
-      });
-    };
-
-    this.onEdingClick = () => {
+    this.onItemChange = (e) => {
       this.setState({
-        editing: true
+          value: e.target.value
+      })
+  }
+
+  
+  
+
+    this.myCheck = () =>{
+      this.setState(({myChecked}) => {
+        return {
+          myChecked: !myChecked
+        }
       });
     }
 
@@ -33,11 +36,18 @@ export default class Task extends Component {
 
   render () {
 
-    let {value, classNames, id, onDeleted} = this.props;
+    let {value, classNames, onDeleted, onToggleCompleted,onToggleEdit, completed, editing, myChecked, onItemchange, mykey, hide} = this.props;
 
-    const {completed, editing,} = this.state;
+    this.onSubmit = (e) => {
+      e.preventDefault();
+      onItemchange(mykey, this.state.value);
+      this.setState({
+       value: ''
+      })
+    }
 
     if(completed){
+      classNames = '';
       classNames += 'completed';
     };
 
@@ -46,45 +56,36 @@ export default class Task extends Component {
       classNames += 'editing';
     }
 
-    
+    if(hide) {
+      classNames += ' toggle-all'
+    }
+
+    if(myChecked) {
+      myChecked = true;
+    }
     
     const res = formatDistanceToNow(new Date(), { addSuffix: true });
    
     return (
-      <li id={id}className={classNames}>
+      <li className={classNames}>
         <div className="view">
-              <input className="toggle" type="checkbox" />
-              <label>
+              <input id='itemCompleted' className="toggle" type="checkbox" defaultChecked={myChecked}
+              onClick={this.myCheck}/>
+              <label htmlFor='itemCompleted'>
                 <span className="description"
-                onClick={this.onItemClick}>{value}</span>
+                onClick={onToggleCompleted}>{value}</span>
                 <span className="created">{res}</span>
               </label>
               <button className="icon icon-edit"
-              onClick={this.onEdingClick}></button>
+              onClick={onToggleEdit}></button>
               <button className="icon icon-destroy"
               onClick={onDeleted}></button>
             </div>
-            <input type="text" className="edit" value="Editing task" readOnly/>
+            <form onSubmit={this.onSubmit}>
+              <input type="text" className="edit"  defaultValue={value} onChange={this.onItemChange}/>
+            </form>
       </li>
     );
   };
 };
 
-// const Task = ({value}) => {
-
-//     const res = formatDistanceToNow(new Date(), { addSuffix: true });
-   
-//     return (
-//             <div className="view">
-//               <input className="toggle" type="checkbox" />
-//               <label>
-//                 <span className="description">{value}</span>
-//                 <span className="created">{res}</span>
-//               </label>
-//               <button className="icon icon-edit"></button>
-//               <button className="icon icon-destroy"></button>
-//             </div>
-//     );
-// };
-
-// export default Task;
