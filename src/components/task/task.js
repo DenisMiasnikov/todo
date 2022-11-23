@@ -1,7 +1,10 @@
 import React, {Component} from "react";
 
+import PropTypes from 'prop-types';
+
 import './task.css'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+
 
 export default class Task extends Component {
 
@@ -11,39 +14,40 @@ export default class Task extends Component {
     this.state = {
       completed: false,
       editing: false,
-      myChecked: false,
-      value: ''
+      value: '',
+      timestamp: new Date(),
+      event: ''
     }
 
     this.onItemChange = (e) => {
       this.setState({
-          value: e.target.value
+          value: e.target.value,
+          timestamp: new Date()
       })
-  }
-
-  
-  
-
-    this.myCheck = () =>{
-      this.setState(({myChecked}) => {
-        return {
-          myChecked: !myChecked
-        }
-      });
     }
 
   }
 
   render () {
+    let {value, classNames, onDeleted, 
+         onToggleCompleted,onToggleEdit, 
+         completed, editing, onItemchange, mykey, hide, timestamp} = this.props;
 
-    let {value, classNames, onDeleted, onToggleCompleted,onToggleEdit, completed, editing, myChecked, onItemchange, mykey, hide} = this.props;
+    this.timestamp = formatDistanceToNow(timestamp, {includeSeconds: true })
 
     this.onSubmit = (e) => {
       e.preventDefault();
-      onItemchange(mykey, this.state.value);
+      onItemchange(mykey, this.state.value, this.state.timestamp, this.state.event);
       this.setState({
        value: ''
       })
+    }
+
+    this.onClick = (e, mykey) => {
+      this.setState({
+        event: e
+      })
+      onToggleCompleted(e, mykey)
     }
 
     if(completed){
@@ -60,32 +64,47 @@ export default class Task extends Component {
       classNames += ' toggle-all'
     }
 
-    if(myChecked) {
-      myChecked = true;
-    }
-    
-    const res = formatDistanceToNow(new Date(), { addSuffix: true });
-   
     return (
-      <li className={classNames}>
+      <li className={classNames? classNames : undefined}>
         <div className="view">
-              <input id='itemCompleted' className="toggle" type="checkbox" defaultChecked={myChecked}
-              onClick={this.myCheck}/>
-              <label htmlFor='itemCompleted'>
-                <span className="description"
-                onClick={onToggleCompleted}>{value}</span>
-                <span className="created">{res}</span>
+              <input id={mykey} className="toggle" type="checkbox" 
+              onClick={this.onClick}/>
+              <label htmlFor={mykey}>
+                <span className="description">{value}</span>
+                <span className="created">{this.timestamp}</span>
               </label>
               <button className="icon icon-edit"
               onClick={onToggleEdit}></button>
               <button className="icon icon-destroy"
               onClick={onDeleted}></button>
-            </div>
-            <form onSubmit={this.onSubmit}>
-              <input type="text" className="edit"  defaultValue={value} onChange={this.onItemChange}/>
-            </form>
+        </div>
+        <form onSubmit={this.onSubmit}>
+          <input type="text" className="edit"  defaultValue={value} onChange={this.onItemChange}/>
+        </form>
       </li>
     );
   };
 };
 
+Task.defaultProps = {
+  onItemChange: () => {},
+  hide: false,
+  completed: false,
+  value: 'Task', 
+  classNames: '',
+  onDeleted: () => {},
+  onToggleCompleted: () => {},
+  onToggleEdit: () => {}, 
+  editing: false,
+  mykey: 10,  
+  timestamp: new Date()
+};
+
+Task.propTypes = {
+  hide: PropTypes.bool,
+  completed: PropTypes.bool,
+  value: PropTypes.string, 
+  classNames: PropTypes.string,
+  editing: PropTypes.bool,
+  mykey: PropTypes.number
+}

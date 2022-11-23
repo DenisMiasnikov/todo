@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import PropTypes from 'prop-types';
+
 import Task from '../task';
 import './taskList.css'
 
@@ -30,4 +32,23 @@ export default class TaskList extends Component {
       </ul>
     );
   }
+}
+
+TaskList.deafultProps = {
+  data: {value: 'Some Task',
+         className: '',
+         editing: false,
+         completed: false,
+         hide: false,
+         id: 10,
+         timestamp: new Date()
+        }, 
+  onDeleted: () => {}, 
+  onToggleCompleted: () => {}, 
+  onToggleEdit: () => {}, 
+  onItemChange: () => {}
+}
+
+TaskList.propTypes = {
+  data: PropTypes.array
 }

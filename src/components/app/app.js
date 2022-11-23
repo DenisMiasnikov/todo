@@ -6,6 +6,7 @@ import TaskList from '../taskList';
 import NewTaskForm from '../newTaskForm';
 
 
+
 export default class App extends Component {
 
     constructor() {
@@ -21,7 +22,7 @@ export default class App extends Component {
                 completed: false,
                 hide: false,
                 id: this.maxId++,
-                myChecked: false
+                timestamp: new Date()
             };
         }
 
@@ -97,12 +98,16 @@ export default class App extends Component {
             })
         }
 
-        this.onItemChange = (id, value) => {
+        this.onItemChange = (id, value, timestamp, event) => {
+            if(event !== '') {
+                event.target.checked = false;
+            }
+            
             this.setState(({todoData}) => {
                 const idx = todoData.findIndex((el) => el.id === id);
                 const oldItem = todoData[idx];
-                const newValue = {...oldItem, value: value};
-                const newItem = {...newValue, editing: !newValue.editing};
+                const newValue = {...oldItem, value: value, timestamp: timestamp};
+                const newItem = {...newValue, editing: !newValue.editing, completed: false};
                
                 const newData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
                 
@@ -174,7 +179,6 @@ export default class App extends Component {
         const completedCount = this.state.todoData.filter((el) => el.completed).length;
 
         const todoCount = this.state.todoData.length - completedCount;
-
 
         return (
             <section className="todoapp">

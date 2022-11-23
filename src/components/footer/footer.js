@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 
+import PropTypes from 'prop-types';
+
 import TaskFilter from "../tasksFilter";
 import './footer.css'
 
@@ -21,4 +23,16 @@ export default class Footer extends Component {
     );
   }
   
+}
+
+Footer.defaultProps = {
+  count: 'Some', 
+  delAllCompleted: () => {}, 
+  hideCompleted: () => {}, 
+  showCompleted: () => {}, 
+  showAll: () => {}
+}
+
+Footer.defaultProps = {
+  count: PropTypes.number || PropTypes.string
 }

@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 
-import './taskFilter.css'
+import PropTypes from 'prop-types';
+
+import './taskFilter.css';
 
 export default class TaskFilter extends Component {
   
@@ -16,21 +18,21 @@ export default class TaskFilter extends Component {
     this.onClick = (e) => {
       if(e.target.innerHTML === 'All') {
         this.setState({
-          all: true,
-          active: false,
-          completed: false
+          allItems: true,
+          activeItems: false,
+          completedItems: false
         })
       } else if (e.target.innerHTML === 'Active') {
         this.setState({
-          all: false,
-          active: true,
-          completed: false
+          allItems: false,
+          activeItems: true,
+          completedItems: false
         })
       } else if (e.target.innerHTML === 'Completed') {
         this.setState({
-          all: false,
-          active: false,
-          completed: true
+          allItems: false,
+          activeItems: false,
+          completedItems: true
         })
       }
     }
@@ -58,30 +60,45 @@ export default class TaskFilter extends Component {
       this.onClick(e);
     }
 
-    if (this.state.all) {
+    if (this.state.allItems) {
       all = 'selected'
     }
 
-    if (this.state.active) {
+    if (this.state.activeItems) {
       active = 'selected'
     }
     
-    if (this.state.completed) {
+    if (this.state.completedItems) {
       completed = 'selected'
     }
 
     return (
       <ul className="filters">
           <li>
-            <button className={all} onClick={this.showAll} >All</button>
+            <button className={all ? all : undefined} onClick={this.showAll} >All</button>
           </li>
           <li>
-            <button className={active} onClick={this.hideCompleted}>Active</button>
+            <button className={active ? active : undefined} onClick={this.hideCompleted}>Active</button>
           </li>
           <li>
-            <button className={completed} onClick={this.showCompleted}>Completed</button>
+            <button className={completed ? completed: undefined} onClick={this.showCompleted}>Completed</button>
           </li>
       </ul>
   );
   }
+};
+
+// TaskFilter.defaultProps = {
+//   hideCompleted: () => {}, 
+//   showCompleted: () => {}, 
+//   showAll: () => {}, 
+//   all: true, 
+//   active: false, 
+//   completed: false
+// };
+
+TaskFilter.propTypes = {
+  all: PropTypes.bool,
+  active: PropTypes.bool,
+  completed: PropTypes.bool,
 }
