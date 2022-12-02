@@ -1,1 +1,1 @@
-https://katatodo-hf2xacj77-denismiasnikov.vercel.app/
+https://katatodo-denismiasnikov.vercel.app/
