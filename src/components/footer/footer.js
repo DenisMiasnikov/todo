@@ -1,38 +1,33 @@
-import React, {Component} from "react";
-
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import TaskFilter from "../tasksFilter";
-import './footer.css'
+import TaskFilter from '../tasksFilter';
+import './footer.css';
 
-export default class Footer extends Component {
+function Footer(props) {
+  const { count, delAllCompleted, hideCompleted, showCompleted, showAll } = props;
 
-  render () {
-    const {count, delAllCompleted, hideCompleted, showCompleted, showAll} = this.props;
-    
-
-    return (
-      <footer className="footer">
-        <span className="todo-count">{count} items left</span>
-        <TaskFilter hideCompleted={hideCompleted} showCompleted={showCompleted} showAll={showAll}/>
-        <button className="clear-completed"
-                onClick={delAllCompleted}>
-          Clear completed
-        </button>
-      </footer>
-    );
-  }
-  
+  return (
+    <footer className="footer">
+      <span className="todo-count">{count} items left</span>
+      <TaskFilter hideCompleted={hideCompleted} showCompleted={showCompleted} showAll={showAll} />
+      <button type="button" className="clear-completed" onClick={delAllCompleted}>
+        Clear completed
+      </button>
+    </footer>
+  );
 }
+
+export default Footer;
 
 Footer.defaultProps = {
-  count: 'Some', 
-  delAllCompleted: () => {}, 
-  hideCompleted: () => {}, 
-  showCompleted: () => {}, 
-  showAll: () => {}
-}
+  count: 'Some',
+  delAllCompleted: () => {},
+  hideCompleted: () => {},
+  showCompleted: () => {},
+  showAll: () => {},
+};
 
 Footer.defaultProps = {
-  count: PropTypes.number || PropTypes.string
-}
+  count: PropTypes.number || PropTypes.string,
+};

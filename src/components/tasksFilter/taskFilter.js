@@ -1,104 +1,103 @@
-import React, {Component} from "react";
-
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import './taskFilter.css';
 
 export default class TaskFilter extends Component {
-  
-  constructor () {
-    super ()
+  constructor() {
+    super();
 
     this.state = {
-      all: true,
-      active: false,
-      completed: false
-    }
-
+      allItems: 'selected',
+      activeItems: '',
+      completedItems: '',
+    };
     this.onClick = (e) => {
-      if(e.target.innerHTML === 'All') {
+      if (e.target.value === 'all') {
         this.setState({
-          allItems: true,
-          activeItems: false,
-          completedItems: false
-        })
-      } else if (e.target.innerHTML === 'Active') {
+          allItems: 'selected',
+          activeItems: '',
+          completedItems: '',
+        });
+      } else if (e.target.value === 'active') {
         this.setState({
-          allItems: false,
-          activeItems: true,
-          completedItems: false
-        })
-      } else if (e.target.innerHTML === 'Completed') {
+          allItems: '',
+          activeItems: 'selected',
+          completedItems: '',
+        });
+      } else if (e.target.value === 'completed') {
         this.setState({
-          allItems: false,
-          activeItems: false,
-          completedItems: true
-        })
+          allItems: '',
+          activeItems: '',
+          completedItems: 'selected',
+        });
       }
-    }
-
+    };
   }
-  
 
   render() {
+    const { hideCompleted, showCompleted, showAll } = this.props;
+    const { allItems, activeItems, completedItems } = this.state;
 
-    let {hideCompleted, showCompleted, showAll, all, active, completed} = this.props;
-
-
-    this.showAll = e => {
+    this.showAll = (e) => {
       showAll(e);
       this.onClick(e);
-    }
+    };
 
-    this.hideCompleted = e => {
+    this.hideCompleted = (e) => {
       hideCompleted(e);
       this.onClick(e);
-    }
+    };
 
-    this.showCompleted = e => {
+    this.showCompleted = (e) => {
       showCompleted(e);
       this.onClick(e);
-    }
-
-    if (this.state.allItems) {
-      all = 'selected'
-    }
-
-    if (this.state.activeItems) {
-      active = 'selected'
-    }
-    
-    if (this.state.completedItems) {
-      completed = 'selected'
-    }
+    };
 
     return (
-      <ul className="filters">
+      <form>
+        <ul className="filters">
           <li>
-            <button className={all ? all : undefined} onClick={this.showAll} >All</button>
+            <input
+              className="hide"
+              type="radio"
+              id="all"
+              value="all"
+              name="filter"
+              defaultChecked
+              onClick={this.showAll}
+            />
+            <label className={allItems} htmlFor="all">
+              All
+            </label>
           </li>
           <li>
-            <button className={active ? active : undefined} onClick={this.hideCompleted}>Active</button>
+            <input
+              className="hide"
+              type="radio"
+              id="active"
+              value="active"
+              name="filter"
+              onClick={this.hideCompleted}
+            />
+            <label className={activeItems} htmlFor="active">
+              Active
+            </label>
           </li>
           <li>
-            <button className={completed ? completed: undefined} onClick={this.showCompleted}>Completed</button>
+            <input
+              className="hide"
+              type="radio"
+              id="completed"
+              value="completed"
+              name="filter"
+              onClick={this.showCompleted}
+            />
+            <label className={completedItems} htmlFor="completed">
+              Completed
+            </label>
           </li>
-      </ul>
-  );
+        </ul>
+      </form>
+    );
   }
-};
-
-// TaskFilter.defaultProps = {
-//   hideCompleted: () => {}, 
-//   showCompleted: () => {}, 
-//   showAll: () => {}, 
-//   all: true, 
-//   active: false, 
-//   completed: false
-// };
-
-TaskFilter.propTypes = {
-  all: PropTypes.bool,
-  active: PropTypes.bool,
-  completed: PropTypes.bool,
 }
