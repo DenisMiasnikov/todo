@@ -1,3 +1,3 @@
-import App from './app';
+import AppHooks from './appHook';
 
-export default App;
+export default AppHooks;

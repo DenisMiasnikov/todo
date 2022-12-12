@@ -1,103 +1,85 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import './taskFilter.css';
 
-export default class TaskFilter extends Component {
-  constructor() {
-    super();
+export default function TaskFilter(props) {
+  const [myState, setMyState] = useState({
+    allItems: 'selected',
+    activeItems: '',
+    completedItems: '',
+  });
 
-    this.state = {
+  const onAll = (e) => {
+    setMyState({
       allItems: 'selected',
       activeItems: '',
       completedItems: '',
-    };
-    this.onClick = (e) => {
-      if (e.target.value === 'all') {
-        this.setState({
-          allItems: 'selected',
-          activeItems: '',
-          completedItems: '',
-        });
-      } else if (e.target.value === 'active') {
-        this.setState({
-          allItems: '',
-          activeItems: 'selected',
-          completedItems: '',
-        });
-      } else if (e.target.value === 'completed') {
-        this.setState({
-          allItems: '',
-          activeItems: '',
-          completedItems: 'selected',
-        });
-      }
-    };
-  }
+    });
+  };
 
-  render() {
-    const { hideCompleted, showCompleted, showAll } = this.props;
-    const { allItems, activeItems, completedItems } = this.state;
+  const onActive = (e) => {
+    setMyState({
+      allItems: '',
+      activeItems: 'selected',
+      completedItems: '',
+    });
+  };
 
-    this.showAll = (e) => {
-      showAll(e);
-      this.onClick(e);
-    };
+  const onCompleted = (e) => {
+    setMyState({
+      allItems: '',
+      activeItems: '',
+      completedItems: 'selected',
+    });
+  };
 
-    this.hideCompleted = (e) => {
-      hideCompleted(e);
-      this.onClick(e);
-    };
+  const { hideCompleted, showCompleted, showAll } = props;
+  const { allItems, activeItems, completedItems } = myState;
 
-    this.showCompleted = (e) => {
-      showCompleted(e);
-      this.onClick(e);
-    };
+  const filterAll = (e) => {
+    showAll(e);
+    onAll(e);
+  };
 
-    return (
-      <form>
-        <ul className="filters">
-          <li>
-            <input
-              className="hide"
-              type="radio"
-              id="all"
-              value="all"
-              name="filter"
-              defaultChecked
-              onClick={this.showAll}
-            />
-            <label className={allItems} htmlFor="all">
-              All
-            </label>
-          </li>
-          <li>
-            <input
-              className="hide"
-              type="radio"
-              id="active"
-              value="active"
-              name="filter"
-              onClick={this.hideCompleted}
-            />
-            <label className={activeItems} htmlFor="active">
-              Active
-            </label>
-          </li>
-          <li>
-            <input
-              className="hide"
-              type="radio"
-              id="completed"
-              value="completed"
-              name="filter"
-              onClick={this.showCompleted}
-            />
-            <label className={completedItems} htmlFor="completed">
-              Completed
-            </label>
-          </li>
-        </ul>
-      </form>
-    );
-  }
+  const filterActive = (e) => {
+    hideCompleted(e);
+    onActive(e);
+  };
+
+  const filterCompleted = (e) => {
+    showCompleted(e);
+    onCompleted(e);
+  };
+
+  return (
+    <form>
+      <ul className="filters">
+        <li>
+          <input className="hide" type="radio" id="all" value="all" name="filter" defaultChecked onClick={filterAll} />
+          <label className={allItems} htmlFor="all">
+            All
+          </label>
+        </li>
+        <li>
+          <input className="hide" type="radio" id="active" value="active" name="filter" onClick={filterActive} />
+          <label className={activeItems} htmlFor="active">
+            Active
+          </label>
+        </li>
+        <li>
+          <input
+            className="hide"
+            type="radio"
+            id="completed"
+            value="completed"
+            name="filter"
+            onClick={filterCompleted}
+          />
+          <label className={completedItems} htmlFor="completed">
+            Completed
+          </label>
+        </li>
+      </ul>
+    </form>
+  );
 }
