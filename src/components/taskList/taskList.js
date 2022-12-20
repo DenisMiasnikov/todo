@@ -6,6 +6,7 @@ import './taskList.css';
 
 export default function TaskList(props) {
   const { data, onDeleted, onToggleCompleted, onToggleEdit, onItemChange } = props;
+  // data.map((item) => console.log(item.id));
 
   const elements = data.map((item) => {
     const { ...itemProps } = item;

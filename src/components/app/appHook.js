@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import './app.css';
@@ -18,68 +18,53 @@ function AppHooks() {
     timeLeft: time,
   });
 
-  const [myState, setMyState] = useState({
-    todoData: [createItem('Create', 70), createItem('Edit', 80), createItem('Add', 90)],
-  });
+  const [todos, setTodos] = useState([createItem('Create', 70), createItem('Edit', 80), createItem('Add', 90)]);
+  const [filter, setFilter] = useState(todos);
+
+  useEffect(() => {
+    setFilter(todos);
+    return () => {};
+  }, [todos]);
 
   const addItem = (value, time) => {
     const newItem = createItem(value, time);
 
-    setMyState(({ todoData }) => {
-      const newData = [...todoData, newItem];
-      return {
-        todoData: newData,
-      };
-    });
+    setTodos((current) => [...current, newItem]);
   };
 
   const deleteItem = (id) => {
-    setMyState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
+    setTodos((current) => {
+      const idx = current.findIndex((el) => el.id === id);
 
-      const newData = [...todoData.slice(0, idx), ...todoData.slice(idx + 1)];
-
-      return {
-        todoData: newData,
-      };
+      return [...current.slice(0, idx), ...current.slice(idx + 1)];
     });
   };
 
   const delAllCompleted = () => {
-    setMyState(({ todoData }) => {
-      const newData = todoData.filter((item) => item.completed === false);
+    setTodos((current) => {
+      const newData = current.filter((item) => item.completed === false);
 
-      return {
-        todoData: newData,
-      };
+      return newData;
     });
   };
 
   const onToggleCompleted = (id) => {
-    setMyState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-      const oldItem = todoData[idx];
+    setTodos((current) => {
+      const idx = current.findIndex((el) => el.id === id);
+      const oldItem = current[idx];
       const newItem = { ...oldItem, completed: !oldItem.completed };
 
-      const newData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
-
-      return {
-        todoData: newData,
-      };
+      return [...current.slice(0, idx), newItem, ...current.slice(idx + 1)];
     });
   };
 
   const onToggleEdit = (id) => {
-    setMyState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-      const oldItem = todoData[idx];
+    setTodos((current) => {
+      const idx = current.findIndex((el) => el.id === id);
+      const oldItem = current[idx];
       const newItem = { ...oldItem, editing: !oldItem.editing };
 
-      const newData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
-
-      return {
-        todoData: newData,
-      };
+      return [...current.slice(0, idx), newItem, ...current.slice(idx + 1)];
     });
   };
 
@@ -88,67 +73,31 @@ function AppHooks() {
       event.target.checked = false;
     }
 
-    setMyState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-      const oldItem = todoData[idx];
+    setTodos((current) => {
+      const idx = current.findIndex((el) => el.id === id);
+      const oldItem = current[idx];
       const newValue = { ...oldItem, value };
       const newItem = { ...newValue, editing: !newValue.editing, completed: false };
 
-      const newData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
-
-      return {
-        todoData: newData,
-      };
+      return [...current.slice(0, idx), newItem, ...current.slice(idx + 1)];
     });
   };
 
   const hideCompleted = () => {
-    setMyState(({ todoData }) => {
-      const newData = todoData.map((element) => {
-        element.hide = element.completed;
-        return element;
-      });
-      return {
-        todoData: newData,
-      };
-    });
+    setFilter(todos.filter((el) => el.completed === false));
   };
 
   const showCompleted = () => {
-    setMyState(({ todoData }) => {
-      const newData = todoData.map((element) => {
-        element.hide = !element.completed;
-        return element;
-      });
-
-      return {
-        todoData: newData,
-      };
-    });
+    setFilter(todos.filter((el) => el.completed === true));
   };
 
   const showAll = () => {
-    setMyState(({ todoData }) => {
-      const newData = todoData.map((element) => {
-        if (element.hide === true) {
-          element.hide = !element.hide;
-        } else {
-          return element;
-        }
-        return element;
-      });
-
-      return {
-        todoData: newData,
-      };
-    });
+    setFilter(todos);
   };
 
-  const { todoData } = myState;
+  const completedCount = todos.filter((el) => el.completed).length;
 
-  const completedCount = todoData.filter((el) => el.completed).length;
-
-  const todoCount = todoData.length - completedCount;
+  const todoCount = todos.length - completedCount;
 
   return (
     <section className="todoapp">
@@ -158,7 +107,7 @@ function AppHooks() {
       </header>
       <section className="main">
         <TaskList
-          data={todoData}
+          data={filter}
           onDeleted={deleteItem}
           onToggleCompleted={onToggleCompleted}
           onToggleEdit={onToggleEdit}

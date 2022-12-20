@@ -23,7 +23,7 @@ export default function Task(props) {
     myCompleted: false,
     newvalue: '',
     event: '',
-    time: 0,
+    time: null,
     counting: false,
     className: '',
   });
@@ -31,6 +31,9 @@ export default function Task(props) {
   const className = useMemo(() => {
     if (completed && hide) {
       return 'completed toggle-all';
+    }
+    if (completed && editing) {
+      return 'completed editing';
     }
     if (completed) {
       return 'completed';
@@ -46,7 +49,7 @@ export default function Task(props) {
 
   const { newvalue, event, time, counting } = myState;
 
-  if (myState.time === 0) {
+  if (myState.time === null) {
     setMyState((current) => ({ ...current, time: current.time + timeLeft }));
   }
 
@@ -56,7 +59,7 @@ export default function Task(props) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (time > 1 && counting) {
+      if (time >= 1 && counting) {
         setMyState((current) => ({ ...current, time: current.time - 1 }));
       }
     }, 1000);
